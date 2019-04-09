@@ -99,6 +99,7 @@ def build_test_system(np):
                 options.ruby, cmdline=cmdline)
     elif buildEnv['TARGET_ISA'] == "arm":
         test_sys = makeArmSystem(test_mem_mode, options.machine_type,
+                                 options.membus_width,
                                  options.num_cpus, bm[0], options.dtb_filename,
                                  bare_metal=options.bare_metal,
                                  cmdline=cmdline,
@@ -228,6 +229,25 @@ def build_test_system(np):
         if options.elastic_trace_en and options.checkpoint_restore == None and \
             not options.fast_forward:
             CpuConfig.config_etrace(TestCPUClass, test_sys.cpu, options)
+
+        if buildEnv['TARGET_ISA'] != "arm" and options.workload_automation_vio:
+            warn("Ignoring --workload-automation-vio. It is unsupported on "
+                 "non-ARM systems.")
+        elif options.workload_automation_vio:
+            from m5.objects import PciVirtIO, VirtIO9PDiod
+            viopci = PciVirtIO(pci_bus=0, pci_dev=test_sys.realview._num_pci_dev,
+                               pci_func=0, InterruptPin=1,
+                               InterruptLine=test_sys.realview._num_pci_int_line)
+
+            test_sys.realview._num_pci_dev = test_sys.realview._num_pci_dev + 1
+            test_sys.realview._num_pci_int_line = test_sys.realview._num_pci_int_line + 1
+
+            viopci.vio = VirtIO9PDiod()
+            viopci.vio.root = options.workload_automation_vio
+            viopci.vio.socketPath = "/home/yqureshi/shares/local/scrap/temp"
+            test_sys.realview.viopci = viopci
+            test_sys.realview.viopci.dma = test_sys.iobus.slave
+            test_sys.realview.viopci.pio = test_sys.iobus.master
 
         CacheConfig.config_cache(options, test_sys)
 
@@ -395,5 +415,6 @@ if buildEnv['TARGET_ISA'] == "arm" and options.generate_dtb:
             sys = getattr(root, sysname)
             sys.dtb_filename = create_dtb_for_system(sys, '%s.dtb' % sysname)
 
+root.system.realview.gic.gem5_extensions = True
 Simulation.setWorkCountOptions(test_sys, options)
 Simulation.run(options, root, test_sys, FutureClass)

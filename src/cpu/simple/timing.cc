@@ -152,6 +152,7 @@ TimingSimpleCPU::drainResume()
     schedulePowerGatingEvent();
 
     system->totalNumInsts = 0;
+    system->totalNumUserInsts = 0;
 }
 
 bool

@@ -107,7 +107,15 @@ def create_mem_ctrl(cls, r, i, nbr_mem_ctrls, intlv_bits, intlv_size):
     # the details of the caches here, make an educated guess. 4 MByte
     # 4-way associative with 64 byte cache lines is 6 offset bits and
     # 14 index bits.
-    xor_low_bit = 20
+    #xor_low_bit = 20
+
+    # Use basic hashing for the channel selection, and preferably use
+    # the lower tag bits from the last level cache. 1 MByte
+    # 2-way associative with 64 byte cache lines is 6 offset bits and
+    # 13 index bits.
+    xor_low_bit = 19
+
+    
 
     # Create an instance so we can figure out the address
     # mapping and row-buffer size

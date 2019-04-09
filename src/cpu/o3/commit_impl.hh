@@ -197,6 +197,13 @@ DefaultCommit<Impl>::regStats()
         .flags(total)
         ;
 
+    userinstsCommitted
+        .init(cpu->numThreads)
+        .name(name() + ".committedUserInsts")
+        .desc("Number of user-mode instructions committed")
+        .flags(total)
+        ;
+
     opsCommitted
         .init(cpu->numThreads)
         .name(name() + ".committedOps")
@@ -1371,7 +1378,14 @@ DefaultCommit<Impl>::updateComInstStats(DynInstPtr &inst)
     ThreadID tid = inst->threadNumber;
 
     if (!inst->isMicroop() || inst->isLastMicroop())
-        instsCommitted[tid]++;
+       {
+	 instsCommitted[tid]++;
+	 if (TheISA::inUserMode(thread[tid]->tc))
+	   {
+	     userinstsCommitted[tid]++;
+	   }
+       }
+       
     opsCommitted[tid]++;
 
     // To match the old model, don't count nops and instruction

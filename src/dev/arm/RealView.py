@@ -536,6 +536,8 @@ class RealView(Platform):
     cxx_header = "dev/arm/realview.hh"
     system = Param.System(Parent.any, "system")
     _mem_regions = [(Addr(0), Addr('256MB'))]
+    _num_pci_dev = 0
+    _num_pci_int_line = 0
 
     def _on_chip_devices(self):
         return []
@@ -965,10 +967,22 @@ class VExpress_EMM(RealView):
 
     # Attach any PCI devices that are supported
     def attachPciDevices(self):
-        self.ethernet = IGbE_e1000(pci_bus=0, pci_dev=0, pci_func=0,
-                                   InterruptLine=1, InterruptPin=1)
-        self.ide = IdeController(disks = [], pci_bus=0, pci_dev=1, pci_func=0,
-                                 InterruptLine=2, InterruptPin=2)
+        #self.ethernet = IGbE_e1000(pci_bus=0, pci_dev=0, pci_func=0,
+        #                           InterruptLine=1, InterruptPin=1)
+        #self.ide = IdeController(disks = [], pci_bus=0, pci_dev=1, pci_func=0,
+        #                         InterruptLine=2, InterruptPin=2)
+        self.ethernet = IGbE_e1000(pci_bus=0, pci_dev=self._num_pci_dev,
+                                   pci_func=0,
+                                   InterruptLine=self._num_pci_int_line,
+                                   InterruptPin=1)
+        self._num_pci_dev = self._num_pci_dev + 1
+        self._num_pci_int_line = self._num_pci_int_line + 1
+        self.ide = IdeController(disks = [], pci_bus=0,
+                                 pci_dev=self._num_pci_dev, pci_func=0,
+                                 InterruptLine=self._num_pci_int_line,
+                                 InterruptPin=2)
+        self._num_pci_dev = self._num_pci_dev + 1
+        self._num_pci_int_line = self._num_pci_int_line + 1
 
     def enableMSIX(self):
         self.gic = Pl390(dist_addr=0x2C001000, cpu_addr=0x2C002000, it_lines=512)

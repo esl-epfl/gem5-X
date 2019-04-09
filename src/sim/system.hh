@@ -583,6 +583,7 @@ class System : public MemObject
 
   public:
     Counter totalNumInsts;
+    Counter totalNumUserInsts;
     EventQueue instEventQueue;
     std::map<std::pair<uint32_t,uint32_t>, Tick>  lastWorkItemStarted;
     std::map<uint32_t, Stats::Histogram*> workItemStats;

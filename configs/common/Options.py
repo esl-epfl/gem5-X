@@ -90,6 +90,8 @@ def addNoISAOptions(parser):
 
 
     parser.add_option("--memchecker", action="store_true")
+    parser.add_option("--membus-width", type="int", default=16, help="System membus Width")
+
 
     # Cache Options
     parser.add_option("--external-memory-system", type="string",
@@ -110,6 +112,29 @@ def addNoISAOptions(parser):
     parser.add_option("--l2_assoc", type="int", default=8)
     parser.add_option("--l3_assoc", type="int", default=16)
     parser.add_option("--cacheline_size", type="int", default=64)
+    parser.add_option("--l2bus-width", type="int", default=32, help="L2 Bus Width")
+
+    # DerivO3CPU Options
+    parser.add_option("--fetchToDecodeDelay", type="int", default=1, help="Fetch to decode delay")
+    parser.add_option("--decodeToRenameDelay", type="int", default=1, help="Decode to rename delay")
+    parser.add_option("--renameToIEWDelay", type="int", default=2, help="Rename to IEW delay")
+    parser.add_option("--iewToCommitDelay", type="int", default=1, help="Issue/Execute/Writeback to commit")
+    parser.add_option("--issueToExecuteDelay", type="int", default=1, help="Issue to execute delay")
+    parser.add_option("--renameToROBDelay", type="int", default=1, help="Rename to reorder buffer delay") 
+    parser.add_option("--fetchWidth", type="int", default=5, help="Fetch width")
+    parser.add_option("--decodeWidth", type="int", default=5, help="Decode width")
+    parser.add_option("--renameWidth", type="int", default=5, help="Rename width")
+    parser.add_option("--dispatchWidth", type="int", default=5, help="Dispatch width")
+    parser.add_option("--issueWidth", type="int", default=5, help="issue width")
+    parser.add_option("--wbWidth", type="int", default=5, help="Writeback width")
+    parser.add_option("--commitWidth", type="int", default=5, help="Commit width")
+    parser.add_option("--squashWidth", type="int", default=5, help="Squash width")
+    parser.add_option("--numPhysIntRegs", type="int", default=256, help="Number of physical integer registers")    
+    parser.add_option("--numPhysFloatRegs", type="int", default=256, help="Number of physical floating registers")
+    parser.add_option("--numPhysVecRegs", type="int", default=256, help="Number of physical vector registers")
+    parser.add_option("--numROBEntries", type="int", default=128, help="Number of reorder buffer entries")
+   
+
 
     # Enable Ruby
     parser.add_option("--ruby", action="store_true")
@@ -372,3 +397,8 @@ def addFSOptions(parser):
     parser.add_option("--command-line-file", action="store",
                       default=None, type="string",
                       help="File with a template for the kernel command line")
+
+    # Workload Automation options
+    parser.add_option("--workload-automation-vio", action="store", type="string",
+                      default=None, help="Enable the Virtio 9P device and set "
+                      "the path to use. Required to use Workload Automation")

@@ -91,6 +91,7 @@ def config_cache(options, system):
                                    assoc=options.l2_assoc)
 
         system.tol2bus = L2XBar(clk_domain = system.cpu_clk_domain)
+        system.tol2bus.width = options.l2bus_width
         system.l2.cpu_side = system.tol2bus.master
         system.l2.mem_side = system.membus.slave
 

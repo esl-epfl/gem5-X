@@ -840,6 +840,8 @@ Execute::doInstCommitAccounting(MinorDynInstPtr inst)
     assert(!inst->isFault());
 
     MinorThread *thread = cpu.threads[inst->id.threadId];
+    ThreadID thread_id = inst->id.threadId;
+    ThreadContext *tc   = cpu.getContext(thread_id);
 
     /* Increment the many and various inst and op counts in the
      *  thread and system */
@@ -849,6 +851,14 @@ Execute::doInstCommitAccounting(MinorDynInstPtr inst)
         thread->numInsts++;
         cpu.stats.numInsts++;
         cpu.system->totalNumInsts++;
+
+	if(TheISA::inUserMode(tc))
+	{
+	  thread->numUserInsts++;
+	  cpu.stats.numUserInsts++;
+          cpu.system->totalNumUserInsts++;
+
+	}
 
         /* Act on events related to instruction counts */
         cpu.comInstEventQueue[inst->id.threadId]->serviceEvents(thread->numInst);

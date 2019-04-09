@@ -41,7 +41,7 @@
 
 ### If we are not compiling on an arm v8, we must use cross tools ###
 ifneq ($(shell uname -m), aarch64)
-CROSS_COMPILE?=aarch64-linux-gnu-
+CROSS_COMPILE?=/home/yqureshi/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-
 endif
 CC=$(CROSS_COMPILE)gcc
 AS=$(CROSS_COMPILE)as
@@ -55,7 +55,9 @@ JR=jar
 #JDK_PATH=/path/to/jdk/version_number
 
 CFLAGS=-O2 -I $(JDK_PATH)/include/ -I $(JDK_PATH)/include/linux \
-       -I$(PWD)/../../include -march=armv8-a
+       -I$(PWD)/../../include \
+       -I/home/yqureshi/gcc-linaro-7.2.1-2017.11-x86_64_aarch64-linux-gnu/aarch64-linux-gnu/libc/usr/include \
+       -march=armv8-a 
 LDFLAGS=-static -L. -lm5
 
 LIB_OBJS=m5op_arm_A64.o m5_mmap.o

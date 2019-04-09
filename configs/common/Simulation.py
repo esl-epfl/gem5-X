@@ -69,6 +69,7 @@ def setCPUClass(options):
        returns these two types of cpus and the initial mode of operation
        depending on the options provided.
     """
+    print("In setCPUClass")
 
     TmpClass, test_mem_mode = getCPUClass(options.cpu_type)
     CPUClass = None
@@ -77,7 +78,9 @@ def setCPUClass(options):
         fatal("%s must be used with caches" % options.cpu_type)
 
     if options.checkpoint_restore != None:
+	print("options.checkpoint_restore")
         if options.restore_with_cpu != options.cpu_type:
+            print("options.restore_with_cpu != options.cpu_type")
             CPUClass = TmpClass
             TmpClass, test_mem_mode = getCPUClass(options.restore_with_cpu)
     elif options.fast_forward:
@@ -89,6 +92,13 @@ def setCPUClass(options):
     if test_mem_mode == 'atomic' and options.ruby:
         warn("Memory mode will be changed to atomic_noncaching")
         test_mem_mode = 'atomic_noncaching'
+
+    if TmpClass == CPUClass :
+	print ("TmpClass == CPUClass")
+    else:
+	print ("TmpClass != CPUClass")
+        print (TmpClass)
+        print(CPUClass)
 
     return (TmpClass, test_mem_mode, CPUClass)
 
@@ -463,6 +473,9 @@ def run(options, root, testsys, cpu_class):
         switch_cpus = [cpu_class(switched_out=True, cpu_id=(i))
                        for i in xrange(np)]
 
+	if cpu_class == DerivO3CPU:
+	    print("DETECTED DERIVO3CPU")
+
         for i in xrange(np):
             if options.fast_forward:
                 testsys.cpu[i].max_insts_any_thread = int(options.fast_forward)
@@ -472,6 +485,27 @@ def run(options, root, testsys, cpu_class):
             switch_cpus[i].progress_interval = \
                 testsys.cpu[i].progress_interval
             switch_cpus[i].isa = testsys.cpu[i].isa
+           
+            if cpu_class == DerivO3CPU:
+                switch_cpus[i].fetchToDecodeDelay  = options.fetchToDecodeDelay
+                switch_cpus[i].decodeToRenameDelay = options.decodeToRenameDelay
+                switch_cpus[i].renameToIEWDelay    = options.renameToIEWDelay
+                switch_cpus[i].iewToCommitDelay    = options.iewToCommitDelay
+                switch_cpus[i].issueToExecuteDelay = options.issueToExecuteDelay
+                switch_cpus[i].renameToROBDelay    = options.renameToROBDelay
+                switch_cpus[i].fetchWidth          = options.fetchWidth
+                switch_cpus[i].decodeWidth         = options.decodeWidth
+                switch_cpus[i].renameWidth         = options.renameWidth
+                switch_cpus[i].dispatchWidth       = options.dispatchWidth
+                switch_cpus[i].issueWidth          = options.issueWidth
+                switch_cpus[i].wbWidth             = options.wbWidth
+                switch_cpus[i].commitWidth         = options.commitWidth
+                switch_cpus[i].squashWidth         = options.squashWidth
+                switch_cpus[i].numPhysIntRegs      = options.numPhysIntRegs
+                switch_cpus[i].numPhysFloatRegs    = options.numPhysFloatRegs
+                switch_cpus[i].numPhysVecRegs      = options.numPhysVecRegs
+                switch_cpus[i].numROBEntries       = options.numROBEntries
+    
             # simulation period
             if options.maxinsts:
                 switch_cpus[i].max_insts_any_thread = options.maxinsts

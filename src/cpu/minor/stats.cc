@@ -52,6 +52,10 @@ MinorStats::regStats(const std::string &name, BaseCPU &baseCpu)
         .name(name + ".committedInsts")
         .desc("Number of instructions committed");
 
+    numUserInsts
+        .name(name + ".committedUserInsts")
+        .desc("Number of user-mode instructions committed");
+
     numOps
         .name(name + ".committedOps")
         .desc("Number of ops (including micro ops) committed");

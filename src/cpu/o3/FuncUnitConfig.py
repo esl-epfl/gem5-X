@@ -45,11 +45,12 @@ from FuncUnit import *
 
 class IntALU(FUDesc):
     opList = [ OpDesc(opClass='IntAlu') ]
-    count = 6
+    count = 3 # 6
+ 
 
 class IntMultDiv(FUDesc):
-    opList = [ OpDesc(opClass='IntMult', opLat=3),
-               OpDesc(opClass='IntDiv', opLat=20, pipelined=False) ]
+    opList = [ OpDesc(opClass='IntMult', opLat=2), # 3
+               OpDesc(opClass='IntDiv', opLat=12, pipelined=False) ] # 20
 
     # DIV and IDIV instructions in x86 are implemented using a loop which
     # issues division microops.  The latency of these microops should really be
@@ -58,21 +59,21 @@ class IntMultDiv(FUDesc):
     if buildEnv['TARGET_ISA'] in ('x86'):
         opList[1].opLat=1
 
-    count=2
+    count=2 # 2
 
 class FP_ALU(FUDesc):
-    opList = [ OpDesc(opClass='FloatAdd', opLat=2),
-               OpDesc(opClass='FloatCmp', opLat=2),
+    opList = [ OpDesc(opClass='FloatAdd', opLat=2), # opLat=2
+               OpDesc(opClass='FloatCmp', opLat=3),
                OpDesc(opClass='FloatCvt', opLat=2) ]
-    count = 4
+    count = 2 # 4
 
 class FP_MultDiv(FUDesc):
     opList = [ OpDesc(opClass='FloatMult', opLat=4),
-               OpDesc(opClass='FloatMultAcc', opLat=5),
+               OpDesc(opClass='FloatMultAcc', opLat=4),  # opLat=5
                OpDesc(opClass='FloatMisc', opLat=3),
-               OpDesc(opClass='FloatDiv', opLat=12, pipelined=False),
+               OpDesc(opClass='FloatDiv', opLat=12, pipelined=False),  # opLat=12
                OpDesc(opClass='FloatSqrt', opLat=24, pipelined=False) ]
-    count = 2
+    count = 1 # 2
 
 class SIMD_Unit(FUDesc):
     opList = [ OpDesc(opClass='SimdAdd'),
@@ -95,7 +96,8 @@ class SIMD_Unit(FUDesc):
                OpDesc(opClass='SimdFloatMult'),
                OpDesc(opClass='SimdFloatMultAcc'),
                OpDesc(opClass='SimdFloatSqrt') ]
-    count = 4
+    count = 3 # 4
+
 
 class ReadPort(FUDesc):
     opList = [ OpDesc(opClass='MemRead'),
@@ -110,7 +112,7 @@ class WritePort(FUDesc):
 class RdWrPort(FUDesc):
     opList = [ OpDesc(opClass='MemRead'), OpDesc(opClass='MemWrite'),
                OpDesc(opClass='FloatMemRead'), OpDesc(opClass='FloatMemWrite')]
-    count = 4
+    count = 2 # 4
 
 class IprPort(FUDesc):
     opList = [ OpDesc(opClass='IprAccess', opLat = 3, pipelined = False) ]

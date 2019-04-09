@@ -493,6 +493,8 @@ class DefaultCommit
 
     /** Total number of instructions committed. */
     Stats::Vector instsCommitted;
+    /** Total number of user instructions committed. */
+    Stats::Vector userinstsCommitted;
     /** Total number of ops (including micro ops) committed. */
     Stats::Vector opsCommitted;
     /** Total number of software prefetches committed. */

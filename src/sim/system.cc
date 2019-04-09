@@ -111,6 +111,7 @@ System::System(Params *p)
       thermalModel(p->thermal_model),
       _params(p),
       totalNumInsts(0),
+      totalNumUserInsts(0),
       instEventQueue("system instruction-based event queue")
 {
     // add self to global system list
@@ -410,6 +411,7 @@ void
 System::drainResume()
 {
     totalNumInsts = 0;
+    totalNumUserInsts = 0;
 }
 
 void

@@ -60,6 +60,9 @@ class MinorStats
     /** Number of simulated instructions */
     Stats::Scalar numInsts;
 
+    /** Number of simulated user-mode instructions */
+    Stats::Scalar numUserInsts;
+  
     /** Number of simulated insts and microops */
     Stats::Scalar numOps;
 

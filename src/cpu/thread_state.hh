@@ -146,6 +146,8 @@ struct ThreadState : public Serializable {
     Counter numInst;
     /** Stat for number instructions committed. */
     Stats::Scalar numInsts;
+    /** Stat for number user-mode instructions committed. */
+    Stats::Scalar numUserInsts;
     /** Number of ops (including micro ops) committed. */
     Counter numOp;
     /** Stat for number ops (including micro ops) committed. */

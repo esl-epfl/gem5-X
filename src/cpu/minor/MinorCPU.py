@@ -192,7 +192,7 @@ class MinorCPU(BaseCPU):
 
     threadPolicy = Param.ThreadPolicy('RoundRobin',
             "Thread scheduling policy")
-    fetch1FetchLimit = Param.Unsigned(1,
+    fetch1FetchLimit = Param.Unsigned(2,
         "Number of line fetches allowable in flight at once")
     fetch1LineSnapWidth = Param.Unsigned(0,
         "Fetch1 'line' fetch snap size in bytes"
@@ -206,7 +206,7 @@ class MinorCPU(BaseCPU):
         "Backward cycle delay from Fetch2 to Fetch1 for branch prediction"
         " signalling (0 means in the same cycle, 1 mean the next cycle)")
 
-    fetch2InputBufferSize = Param.Unsigned(2,
+    fetch2InputBufferSize = Param.Unsigned(4,
         "Size of input buffer to Fetch2 in cycles-worth of insts.")
     fetch2ToDecodeForwardDelay = Param.Cycles(1,
         "Forward cycle delay from Fetch2 to Decode (1 means next cycle)")
@@ -214,27 +214,27 @@ class MinorCPU(BaseCPU):
         "Allow Fetch2 to cross input lines to generate full output each"
         " cycle")
 
-    decodeInputBufferSize = Param.Unsigned(3,
+    decodeInputBufferSize = Param.Unsigned(6,
         "Size of input buffer to Decode in cycles-worth of insts.")
     decodeToExecuteForwardDelay = Param.Cycles(1,
         "Forward cycle delay from Decode to Execute (1 means next cycle)")
-    decodeInputWidth = Param.Unsigned(2,
+    decodeInputWidth = Param.Unsigned(4,
         "Width (in instructions) of input to Decode (and implicitly"
         " Decode's own width)")
     decodeCycleInput = Param.Bool(True,
         "Allow Decode to pack instructions from more than one input cycle"
         " to fill its output each cycle")
 
-    executeInputWidth = Param.Unsigned(2,
+    executeInputWidth = Param.Unsigned(4,
         "Width (in instructions) of input to Execute")
     executeCycleInput = Param.Bool(True,
         "Allow Execute to use instructions from more than one input cycle"
         " each cycle")
-    executeIssueLimit = Param.Unsigned(2,
+    executeIssueLimit = Param.Unsigned(4,
         "Number of issuable instructions in Execute each cycle")
     executeMemoryIssueLimit = Param.Unsigned(1,
         "Number of issuable memory instructions in Execute each cycle")
-    executeCommitLimit = Param.Unsigned(2,
+    executeCommitLimit = Param.Unsigned(4,
         "Number of committable instructions in Execute each cycle")
     executeMemoryCommitLimit = Param.Unsigned(1,
         "Number of committable memory references in Execute each cycle")
@@ -243,14 +243,14 @@ class MinorCPU(BaseCPU):
     executeMemoryWidth = Param.Unsigned(0,
         "Width (and snap) in bytes of the data memory interface. (0 mean use"
         " the system cacheLineSize)")
-    executeMaxAccessesInMemory = Param.Unsigned(2,
+    executeMaxAccessesInMemory = Param.Unsigned(4,
         "Maximum number of concurrent accesses allowed to the memory system"
         " from the dcache port")
-    executeLSQMaxStoreBufferStoresPerCycle = Param.Unsigned(2,
+    executeLSQMaxStoreBufferStoresPerCycle = Param.Unsigned(4,
         "Maximum number of stores that the store buffer can issue per cycle")
     executeLSQRequestsQueueSize = Param.Unsigned(1,
         "Size of LSQ requests queue (address translation queue)")
-    executeLSQTransfersQueueSize = Param.Unsigned(2,
+    executeLSQTransfersQueueSize = Param.Unsigned(4,
         "Size of LSQ transfers queue (memory transaction queue)")
     executeLSQStoreBufferSize = Param.Unsigned(5,
         "Size of LSQ store buffer")

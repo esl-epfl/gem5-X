@@ -66,6 +66,11 @@ class CowIdeDisk(IdeDisk):
     def childImage(self, ci):
         self.image.child.image_file = ci
 
+class RawIdeDisk(IdeDisk):
+    image = RawDiskImage(read_only=False)
+    def childImage(self, ci):
+        self.image.image_file=ci
+
 class MemBus(SystemXBar):
     badaddr_responder = BadAddr()
     default = Self.badaddr_responder.pio
@@ -204,7 +209,7 @@ def makeSparcSystem(mem_mode, mdesc=None, cmdline=None):
 
     return self
 
-def makeArmSystem(mem_mode, machine_type, num_cpus=1, mdesc=None,
+def makeArmSystem(mem_mode, machine_type, membus_width, num_cpus=1, mdesc=None,
                   dtb_filename=None, bare_metal=False, cmdline=None,
                   external_memory="", ruby=False, security=False,
                   ignore_dtb=False):
@@ -241,6 +246,7 @@ def makeArmSystem(mem_mode, machine_type, num_cpus=1, mdesc=None,
         self.bridge = Bridge(delay='50ns')
         self.bridge.master = self.iobus.slave
         self.membus = MemBus()
+        self.membus.width = membus_width
         self.membus.badaddr_responder.warn_access = "warn"
         self.bridge.slave = self.membus.master
 
@@ -270,7 +276,14 @@ def makeArmSystem(mem_mode, machine_type, num_cpus=1, mdesc=None,
     self.realview.attachPciDevices()
 
     self.cf0 = CowIdeDisk(driveID='master')
+    #self.cf0 = RawIdeDisk(driveID='master')
     self.cf0.childImage(mdesc.disk())
+
+    #self.ethernet = IGbE_e1000()
+ 
+    #self.realview.attachPciDevice(self.realview, self.ethernet) 
+    self.realview.ethernet=IGbE_e1000()
+    pci_devices.append(self.realview.ethernet)
     # Old platforms have a built-in IDE or CF controller. Default to
     # the IDE controller if both exist. New platforms expect the
     # storage controller to be added from the config script.

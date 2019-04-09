@@ -88,6 +88,9 @@ class SimpleExecContext : public ExecContext {
     Counter numOp;
     Stats::Scalar numOps;
 
+    // Number of simulated user-mode instructions
+    Stats::Scalar numUserInsts;
+
     // Number of integer alu accesses
     Stats::Scalar numIntAluAccesses;
 

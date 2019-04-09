@@ -175,6 +175,11 @@ BaseSimpleCPU::countInst()
     if (!curStaticInst->isMicroop() || curStaticInst->isLastMicroop()) {
         t_info.numInst++;
         t_info.numInsts++;
+	if(TheISA::inUserMode(threadContexts[curThread]))
+	  {
+	    t_info.numUserInsts++;
+	  }
+	
     }
     t_info.numOp++;
     t_info.numOps++;
@@ -235,6 +240,11 @@ BaseSimpleCPU::regStats()
         t_info.numInsts
             .name(thread_str + ".committedInsts")
             .desc("Number of instructions committed")
+            ;
+
+	t_info.numUserInsts
+            .name(thread_str + ".committedUserInsts")
+            .desc("Number of user-mode instructions committed")
             ;
 
         t_info.numOps

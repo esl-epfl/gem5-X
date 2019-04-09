@@ -372,12 +372,12 @@ VirtIO9PDiod::startDiod()
              "Incorrect length of socket path");
     strncpy(socket_address.sun_path, socket_path.c_str(),
             sizeof(socket_address.sun_path) - 1);
-    if (bind(socket_id, (struct sockaddr*) &socket_address,
-             sizeof(struct sockaddr_un)) == -1){
-        perror("Socket binding");
-        panic("Socket binding to %i failed - most likely the output dir" \
-              " and hence unused socket already exists \n", socket_id);
-    }
+//    if (bind(socket_id, (struct sockaddr*) &socket_address,
+//             sizeof(struct sockaddr_un)) == -1){
+//        perror("Socket binding");
+//        panic("Socket binding to %i failed - most likely the output dir"
+//              " and hence unused socket already exists \n", socket_id);
+//    }
 
     diod_pid = fork();
     if (diod_pid == -1) {
@@ -393,6 +393,8 @@ VirtIO9PDiod::startDiod()
         }
 
         // Start diod
+        printf("root: %s\n", p->root.c_str());
+        printf("socket: %s\n", socket_path.c_str());
         execlp(diod, diod,
                "-f", // start in foreground
                "-r", "3", // setup read FD
@@ -400,7 +402,7 @@ VirtIO9PDiod::startDiod()
                "-e", p->root.c_str(), // path to export
                "-n", // disable security
                "-S", // squash all users
-               "-l", socket_path.c_str(), // pass the socket
+               //"-l", socket_path.c_str(), // pass the socket
                (char *)NULL);
         perror("Starting DIOD");
         panic("Failed to execute diod to %s: %i\n",socket_path, errno);

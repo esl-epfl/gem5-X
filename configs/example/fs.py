@@ -99,7 +99,7 @@ def build_test_system(np):
                 options.ruby, cmdline=cmdline)
     elif buildEnv['TARGET_ISA'] == "arm":
         test_sys = makeArmSystem(test_mem_mode, options.machine_type,
-                                 options.membus_width,
+                                 options.membus_width, options,
                                  options.num_cpus, bm[0], options.dtb_filename,
                                  bare_metal=options.bare_metal,
                                  cmdline=cmdline,
@@ -325,6 +325,7 @@ def build_drive_system(np):
 parser = optparse.OptionParser()
 Options.addCommonOptions(parser)
 Options.addFSOptions(parser)
+Options.addSPMOptions(parser)
 
 # Add the ruby specific and protocol specific options
 if '--ruby' in sys.argv:
@@ -337,7 +338,7 @@ if args:
     sys.exit(1)
 
 # system under test can be any CPU
-(TestCPUClass, test_mem_mode, FutureClass) = Simulation.setCPUClass(options)
+(TestCPUClass, test_mem_mode, FutureClass, FutureClass2) = Simulation.setCPUClass(options)
 
 # Match the memories with the CPUs, based on the options for the test system
 TestMemClass = Simulation.setMemClass(options)
@@ -417,4 +418,4 @@ if buildEnv['TARGET_ISA'] == "arm" and options.generate_dtb:
 
 root.system.realview.gic.gem5_extensions = True
 Simulation.setWorkCountOptions(test_sys, options)
-Simulation.run(options, root, test_sys, FutureClass)
+Simulation.run(options, root, test_sys, FutureClass, FutureClass2)

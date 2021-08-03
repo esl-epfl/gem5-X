@@ -48,6 +48,9 @@ from m5.objects import *
 from Caches import *
 
 def config_cache(options, system):
+    num_of_clusters = (options.num_cpus // options.l2_cluster_size)
+    if ((options.num_cpus % options.l2_cluster_size)!=0):
+        num_of_clusters = num_of_clusters + 1
     if options.external_memory_system and (options.caches or options.l2cache):
         print("External caches and internal caches are exclusive options.\n")
         sys.exit(1)
@@ -86,14 +89,50 @@ def config_cache(options, system):
         # Provide a clock for the L2 and the L1-to-L2 bus here as they
         # are not connected using addTwoLevelCacheHierarchy. Use the
         # same clock as the CPUs.
-        system.l2 = l2_cache_class(clk_domain=system.cpu_clk_domain,
-                                   size=options.l2_size,
-                                   assoc=options.l2_assoc)
+	#l2=[]
+	#tol2bus=[]	
+	system.l2 = [l2_cache_class(clk_domain=system.cpu_clk_domain,
+                                    size=options.l2_size,
+                                    assoc=options.l2_assoc)
+                     for i in xrange(num_of_clusters)]
 
-        system.tol2bus = L2XBar(clk_domain = system.cpu_clk_domain)
-        system.tol2bus.width = options.l2bus_width
-        system.l2.cpu_side = system.tol2bus.master
-        system.l2.mem_side = system.membus.slave
+	system.tol2bus = [L2XBar(clk_domain = system.cpu_clk_domain)
+                          for i in xrange(num_of_clusters)]
+
+	#system.l2=l2
+	#system.tol2bus = tol2bus
+
+
+        for i in xrange (num_of_clusters):
+	    #system.l2 = l2_cache_class(clk_domain=system.cpu_clk_domain,
+            #                       size=options.l2_size,
+            #                       assoc=options.l2_assoc)
+            #                       #prefetcher=StridePrefetcher(
+            #                       #           queue_size=8,
+            #                       #           degree=8),
+            #                       #prefetch_on_access=True)
+
+            #system.tol2bus = L2XBar(clk_domain = system.cpu_clk_domain)
+            #system.tol2bus.width = options.l2bus_width
+            #system.l2.cpu_side = system.tol2bus[i].master
+            #system.l2.mem_side = system.membus.slave
+
+	    #system.l2[i] = l2_cache_class(clk_domain=system.cpu_clk_domain,
+            #                        size=options.l2_size,
+            #                        assoc=options.l2_assoc)
+                                   #prefetcher=StridePrefetcher(
+                                   #           queue_size=8,
+                                   #           degree=8),
+                                   #prefetch_on_access=True)
+
+            #system.tol2bus[i] = L2XBar(clk_domain = system.cpu_clk_domain)
+            system.tol2bus[i].width = options.l2bus_width
+            system.l2[i].cpu_side = system.tol2bus[i].master
+            system.l2[i].mem_side = system.membus.slave
+
+            if options.spm:
+                range_l2 = (long(system.load_offset)) + (long(Addr(options.mem_size)))
+                system.l2[i].addr_ranges=AddrRange(0, size=range_l2)
 
     if options.memchecker:
         system.memchecker = MemChecker()
@@ -104,6 +143,57 @@ def config_cache(options, system):
                                   assoc=options.l1i_assoc)
             dcache = dcache_class(size=options.l1d_size,
                                   assoc=options.l1d_assoc)
+            
+            if options.spm:
+                d_spm = SimpleMemory(clk_domain=system.cpu_clk_domain,
+                                            latency = '1ps',
+                                            latency_var = '0ns',
+                                            bandwidth = '512GB/s')
+               # i_spm = SimpleMemory(clk_domain=system.cpu_clk_domain,
+               #                             latency = '10ns',
+               #                             latency_var = '0ns',
+               #                             bandwidth = '64GB/s')
+
+                spm_l1d_bus = CoherentXBar (clk_domain=system.cpu_clk_domain,
+                                                      width = 32,
+                                                      frontend_latency = 0,
+                                                      forward_latency = 0,
+                                                      response_latency = 0,
+                                                      snoop_response_latency = 0)
+
+                spm_d_bus_2 = CoherentXBar (clk_domain=system.cpu_clk_domain,
+                                                      width = 32,
+                                                      frontend_latency = 0,
+                                                      forward_latency = 0,
+                                                      response_latency = 0,
+                                                      snoop_response_latency = 0)
+                                
+               # spm_l1i_bus = NoncoherentXBar (clk_domain=system.cpu_clk_domain,
+               #                                       width = 32,
+               #                                       frontend_latency = 1,
+               #                                       forward_latency = 0, 
+               #                                       response_latency = 1)
+               # spm_i_bus_2 = NoncoherentXBar (clk_domain=system.cpu_clk_domain,
+               #                                       width = 32,
+               #                                       frontend_latency = 1,
+               #                                       forward_latency = 0,
+               #                                       response_latency = 1)
+
+                range_l1 = (long(system.load_offset)) + (long(Addr(options.mem_size)))
+                icache.addr_ranges=AddrRange(0, size=range_l1)
+                dcache.addr_ranges=AddrRange(0, size=range_l1)
+
+                #size_mem_i_spm=(long(Addr(options.i_spm_size)))
+                size_mem_d_spm=(long(Addr(options.d_spm_size)))
+                
+                #i_spm_offset = range_l1+((i)*(size_mem_i_spm+size_mem_d_spm))
+                #d_spm_offset = i_spm_offset + size_mem_i_spm
+                
+                d_spm_offset = range_l1+(i*size_mem_d_spm)
+                
+                
+                #i_spm.range=(AddrRange(i_spm_offset, size=size_mem_i_spm))
+                d_spm.range=(AddrRange(d_spm_offset, size=size_mem_d_spm))
 
             # If we have a walker cache specified, instantiate two
             # instances here
@@ -131,8 +221,16 @@ def config_cache(options, system):
 
             # When connecting the caches, the clock is also inherited
             # from the CPU in question
-            system.cpu[i].addPrivateSplitL1Caches(icache, dcache,
-                                                  iwalkcache, dwalkcache)
+            if options.spm:
+                system.cpu[i].addPrivateSplitL1CachesSPM(icache, dcache, d_spm,
+                                                         spm_l1d_bus, spm_d_bus_2, iwalkcache, dwalkcache)
+
+                if options.num_cpus > 1:
+                    if i > 0:
+                        system.cpu[i].d_spm_bus.master=system.cpu[i-1].d_spm_bus_2.slave
+            else:
+                system.cpu[i].addPrivateSplitL1Caches(icache, dcache,
+                                                      iwalkcache, dwalkcache)
 
             if options.memchecker:
                 # The mem_side ports of the caches haven't been connected yet.
@@ -159,7 +257,7 @@ def config_cache(options, system):
 
         system.cpu[i].createInterruptController()
         if options.l2cache:
-            system.cpu[i].connectAllPorts(system.tol2bus, system.membus)
+            system.cpu[i].connectAllPorts(system.tol2bus[i//options.l2_cluster_size], system.membus)
         elif options.external_memory_system:
             system.cpu[i].connectUncachedPorts(system.membus)
         else:

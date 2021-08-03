@@ -37,7 +37,12 @@ TARGETS=\
 	armv7_gem5_v1_16cpu.dtb \
 	armv8_gem5_v1_1cpu.dtb armv8_gem5_v1_2cpu.dtb \
 	armv8_gem5_v1_4cpu.dtb armv8_gem5_v1_8cpu.dtb \
-	armv8_gem5_v1_16cpu.dtb \
+        armv8_gem5_v1_16cpu.dtb \
+        armv8_gem5_v1_24cpu.dtb \
+        armv8_gem5_v1_28cpu.dtb \
+        armv8_gem5_v1_31cpu.dtb \
+        armv8_gem5_v1_32cpu.dtb \
+        armv8_gem5_v1_64cpu.dtb \
 	armv8_gem5_v1_big_little_2_2.dtb \
 	armv8_gem5_v1_big_little_2_4.dtb
 

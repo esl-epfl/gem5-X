@@ -305,6 +305,52 @@ class BaseCPU(MemObject):
                 self._cached_ports += ["checker.itb.walker.port", \
                                        "checker.dtb.walker.port"]
 
+    def addPrivateSplitL1CachesSPM(self, ic, dc, data_spm, 
+                                   data_spm_bus, data_spm_bus_2, iwc = None, dwc = None):
+        self.icache = ic
+        self.dcache = dc
+        self.icache_port = ic.cpu_side
+        #self.i_spm=inst_spm
+        self.d_spm=data_spm
+        #self.i_spm_bus = inst_spm_bus
+        self.d_spm_bus = data_spm_bus
+	self.d_spm_bus_2 = data_spm_bus_2
+        #self.i_spm_bus_2 =  inst_spm_bus_2
+
+        #self.i_spm.port=self.i_spm_bus_2.master
+        #self.i_spm_bus.master=self.i_spm_bus_2.slave
+        #self.d_spm_bus.master=self.i_spm_bus_2.slave
+        
+	#self.d_spm.port=self.d_spm_bus.master #previous working
+        self.d_spm.port=self.d_spm_bus_2.master
+        self.d_spm_bus.master=self.d_spm_bus_2.slave
+        
+
+        #self.icache.cpu_side = self.i_spm_bus.master
+        self.dcache.cpu_side = self.d_spm_bus.master
+        #self.icache_port = self.i_spm_bus.slave
+        self.dcache_port = self.d_spm_bus.slave
+
+        self._cached_ports = ['icache.mem_side', 'dcache.mem_side']
+        
+        if buildEnv['TARGET_ISA'] in ['x86', 'arm']:
+            if iwc and dwc:
+                self.itb_walker_cache = iwc
+                self.dtb_walker_cache = dwc
+                self.itb.walker.port = iwc.cpu_side
+                self.dtb.walker.port = dwc.cpu_side
+                self._cached_ports += ["itb_walker_cache.mem_side", \
+                                       "dtb_walker_cache.mem_side"]
+            else:
+                self._cached_ports += ["itb.walker.port", "dtb.walker.port"]
+
+            # Checker doesn't need its own tlb caches because it does
+            # functional accesses only
+            if self.checker != NULL:
+                self._cached_ports += ["checker.itb.walker.port", \
+                                       "checker.dtb.walker.port"]
+
+
     def addTwoLevelCacheHierarchy(self, ic, dc, l2c, iwc=None, dwc=None,
                                   xbar=None):
         self.addPrivateSplitL1Caches(ic, dc, iwc, dwc)

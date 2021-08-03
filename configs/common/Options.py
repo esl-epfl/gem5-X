@@ -91,7 +91,10 @@ def addNoISAOptions(parser):
 
     parser.add_option("--memchecker", action="store_true")
     parser.add_option("--membus-width", type="int", default=16, help="System membus Width")
-
+    parser.add_option("--membus-frontend_latency", type="int", default=3, help="System membus frontend latency")
+    parser.add_option("--membus-forward_latency", type="int", default=4, help="System membus forward latency")
+    parser.add_option("--membus-response_latency", type="int", default=2, help="System membus response latency")
+    parser.add_option("--membus-snoop_response_latency", type="int", default=4, help="System membus snoop response latency")
 
     # Cache Options
     parser.add_option("--external-memory-system", type="string",
@@ -110,6 +113,7 @@ def addNoISAOptions(parser):
     parser.add_option("--l1d_assoc", type="int", default=2)
     parser.add_option("--l1i_assoc", type="int", default=2)
     parser.add_option("--l2_assoc", type="int", default=8)
+    parser.add_option("--l2_cluster_size", type="int", default=256, help="Number of CPUs to cluster for each l2 size")
     parser.add_option("--l3_assoc", type="int", default=16)
     parser.add_option("--cacheline_size", type="int", default=64)
     parser.add_option("--l2bus-width", type="int", default=32, help="L2 Bus Width")
@@ -163,6 +167,10 @@ def addCommonOptions(parser):
     parser.add_option("--cpu-type", type="choice", default="AtomicSimpleCPU",
                       choices=CpuConfig.cpu_names(),
                       help = "type of cpu to run with")
+    parser.add_option("--cpu-type_2", type="choice", default="AtomicSimpleCPU",
+                      choices=CpuConfig.cpu_names(),
+                      help = "type of cpu for the 2nd cluster to run with")
+    parser.add_option("--cluster_size_1", type="int", default=0, help="Number of CPUs is the 1st cluster for cpu-type")
     parser.add_option("--checker", action="store_true");
     parser.add_option("--cpu-clock", action="store", type="string",
                       default='2GHz',
@@ -333,6 +341,13 @@ def addSEOptions(parser):
                       help="Redirect stdout to a file.")
     parser.add_option("--errout", default="",
                       help="Redirect stderr to a file.")
+
+def addSPMOptions(parser):
+    #Scratch Pad Memory Options
+     parser.add_option("--spm", action="store_true",
+                       help="Add Scratch pad memory")
+     parser.add_option("--d_spm_size", type="string", default="32kB")
+     
 
 def addFSOptions(parser):
     from FSConfig import os_types

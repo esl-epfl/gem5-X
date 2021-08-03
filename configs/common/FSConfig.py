@@ -209,7 +209,8 @@ def makeSparcSystem(mem_mode, mdesc=None, cmdline=None):
 
     return self
 
-def makeArmSystem(mem_mode, machine_type, membus_width, num_cpus=1, mdesc=None,
+def makeArmSystem(mem_mode, machine_type, membus_width, options, 
+                  num_cpus=1, mdesc=None,
                   dtb_filename=None, bare_metal=False, cmdline=None,
                   external_memory="", ruby=False, security=False,
                   ignore_dtb=False):
@@ -247,6 +248,10 @@ def makeArmSystem(mem_mode, machine_type, membus_width, num_cpus=1, mdesc=None,
         self.bridge.master = self.iobus.slave
         self.membus = MemBus()
         self.membus.width = membus_width
+        self.membus.frontend_latency = options.membus_frontend_latency
+        self.membus.forward_latency = options.membus_forward_latency
+        self.membus.response_latency = options.membus_response_latency
+        self.membus.snoop_response_latency = options.membus_snoop_response_latency
         self.membus.badaddr_responder.warn_access = "warn"
         self.bridge.slave = self.membus.master
 

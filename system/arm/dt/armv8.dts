@@ -105,6 +105,150 @@
 		CPU(15)
 		#endif
 		#if CONF_CPUS > 16
+                CPU(16)
+                #endif
+                #if CONF_CPUS > 17
+                CPU(17)
+                #endif
+                #if CONF_CPUS > 18
+                CPU(18)
+                #endif
+                #if CONF_CPUS > 19
+                CPU(19)
+                #endif
+                #if CONF_CPUS > 20
+                CPU(20)
+                #endif
+                #if CONF_CPUS > 21
+                CPU(21)
+                #endif
+                #if CONF_CPUS > 22
+                CPU(22)
+                #endif
+                #if CONF_CPUS > 23
+                CPU(23)
+                #endif
+                #if CONF_CPUS > 24
+                CPU(24)
+                #endif
+                #if CONF_CPUS > 25
+                CPU(25)
+                #endif
+                #if CONF_CPUS > 26
+                CPU(26)
+                #endif
+                #if CONF_CPUS > 27
+                CPU(27)
+                #endif
+                #if CONF_CPUS > 28
+                CPU(28)
+                #endif
+                #if CONF_CPUS > 29
+                CPU(29)
+                #endif
+                #if CONF_CPUS > 30
+                CPU(30)
+                #endif
+                #if CONF_CPUS > 31
+                CPU(31)
+                #endif
+                #if CONF_CPUS > 32
+                CPU(32)
+                #endif
+                #if CONF_CPUS > 33
+                CPU(33)
+                #endif
+                #if CONF_CPUS > 34
+                CPU(34)
+                #endif
+                #if CONF_CPUS > 35
+                CPU(35)
+                #endif
+                #if CONF_CPUS > 36
+                CPU(36)
+                #endif
+                #if CONF_CPUS > 37
+                CPU(37)
+                #endif
+                #if CONF_CPUS > 38
+                CPU(38)
+                #endif
+                #if CONF_CPUS > 39
+                CPU(39)
+                #endif
+                #if CONF_CPUS > 40
+                CPU(40)
+                #endif
+                #if CONF_CPUS > 41
+                CPU(41)
+                #endif
+                #if CONF_CPUS > 42
+                CPU(42)
+                #endif
+                #if CONF_CPUS > 43
+                CPU(43)
+                #endif
+                #if CONF_CPUS > 44
+                CPU(44)
+                #endif
+                #if CONF_CPUS > 45
+                CPU(45)
+                #endif
+                #if CONF_CPUS > 46
+                CPU(46)
+                #endif
+                #if CONF_CPUS > 47
+                CPU(47)
+                #endif
+                #if CONF_CPUS > 48
+                CPU(48)
+                #endif
+                #if CONF_CPUS > 49
+                CPU(49)
+                #endif
+                #if CONF_CPUS > 50
+                CPU(50)
+                #endif
+                #if CONF_CPUS > 51
+                CPU(51)
+                #endif
+                #if CONF_CPUS > 52
+                CPU(52)
+                #endif
+                #if CONF_CPUS > 53
+                CPU(53)
+                #endif
+                #if CONF_CPUS > 54
+                CPU(54)
+                #endif
+                #if CONF_CPUS > 55
+                CPU(55)
+                #endif
+                #if CONF_CPUS > 56
+                CPU(56)
+                #endif
+                #if CONF_CPUS > 57
+                CPU(57)
+                #endif
+                #if CONF_CPUS > 58
+                CPU(58)
+                #endif
+                #if CONF_CPUS > 59
+                CPU(59)
+                #endif
+                #if CONF_CPUS > 60
+                CPU(60)
+                #endif
+                #if CONF_CPUS > 61
+                CPU(61)
+                #endif
+                #if CONF_CPUS > 62
+                CPU(62)
+                #endif
+                #if CONF_CPUS > 63
+                CPU(63)
+                #endif
+                #if CONF_CPUS > 64
 		#error Unsupported number of CPUs
 		#endif
 	};

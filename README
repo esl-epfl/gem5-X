@@ -3,3 +3,21 @@ The main website can be found at http://esl.epfl.ch/gem5-x/
 
 The readme of gem5 can be found in README-gem5.
 
+# Installation
+============
+
+After cloning the repo, you need to follow these steps:
+
+1. Compile device tree files: `ce gem5-X && make -C system/arm/dt`
+2. Compile the terminal program: `cd util/term && make && cd ../..`
+3. Apply the gem5-X patch to gem5: `./apply-patch.sh <PATH_TO_FULL_SYSTEM_IMAGES>`
+4. Build gem5-X: `scons build/ARM/gem5.fast`
+
+# Launching a simulation:
+=======================
+`./build/ARM/gem5.fast --remote-gdb-port=0 -d log_dir configs/example/fs.py --cpu-clock=1GHz --kernel=vmlinux --machine-type=VExpress_GEM5_V1 --dtb-file=<PATH_TO_GEM5-X>/gem5-X/system/arm/dt/armv8_gem5_v1_1cpu.dtb -n 1 --disk-image=gem5_ubuntu16.img --caches --l2cache --l1i_size=32kB --l1d_size=32kB --l2_size=1MB --l2_assoc=2 --mem-type=DDR4_2400_4x16 --mem-ranks=4 --mem-size=4GB --sys-clock=1600MHz`
+
+# Connecting to the terminal:
+===========================
+Open a new terminal and cd into the gem5-X directory.
+Then connect to the terminal by typping: `./util/term/m5term 127.0.0.1 3456`
